@@ -5,6 +5,8 @@
 #'
 #' @examples none
 vimeo_auth <- function(){
+  clientId <- "f909156f231b78083c0a73a27abf49740357f0e2"
+  clientSecret <- "IUjR8pOWKS4hu7PvjBQAV+BkOqbDyAOwjaKDggOa+m9XnLDw3HUT4fVcVT21PnmWmjx3Fis+bXbnxgZKxfDQqQe6hLnOsNiTN17P0h46pZuJkoMnu48+8IFfHaCiK/r7"
   auth.code <- httr::oauth2.0_token(endpoint = httr::oauth_endpoints("vimeo"),
                                     app = httr::oauth_app(
                                       appname="student video watching",
@@ -30,10 +32,10 @@ vimeo_auth <- function(){
 #'
 #' @examples none
 get_myVideoData <-function(auth.code=vimeo_auth()){
-  GET("https://api.vimeo.com/me/videos",
-      config=config(token=auth.code)) -> response
+  httr::GET("https://api.vimeo.com/me/videos",
+      config=httr::config(token=auth.code)) -> response
 
-  content(response, as="text") -> response_text
+  httr::content(response, as="text") -> response_text
 
   jsonlite::fromJSON(response_text) -> response_list
 
@@ -47,9 +49,9 @@ get_myVideoData <-function(auth.code=vimeo_auth()){
     str_extract(glue::glue("[:graph:]+(?={lastPageNumber})")) -> endpoint
 
   for(pageNumber in 2:as.integer(lastPageNumber)){
-    GET(glue::glue("https://api.vimeo.com{endpoint}{pageNumber}"),
-        config=config(token=auth.code)) -> response
-    content(response, as="text") -> response_text
+    httr::GET(glue::glue("https://api.vimeo.com{endpoint}{pageNumber}"),
+        config=httr::config(token=auth.code)) -> response
+    httr::content(response, as="text") -> response_text
 
     jsonlite::fromJSON(response_text) -> response_list
 
@@ -70,6 +72,9 @@ vimeoService_create <- function(){
 
   rlang::new_environment(parent=globalenv()) -> vimeoServe
   vimeoServe$auth <- vimeo_auth
+  vimeoServe$getMyInfo <- retrieve_myInfo
+  vimeoServe$getMyShowcases <- get_userShowcases
+  vimeoServe$get_showcaseVideos <- get_showcaseVideos
   vimeoServe$getVideo <- get_myVideoData
   return(vimeoServe)
 }
