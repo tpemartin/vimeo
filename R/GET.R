@@ -38,9 +38,10 @@ vimeo_apiFunctional <- function(postingMessage){
       requestExpr
     )
     # response
-    httr::content(response, as="text") -> response_text
+    httr::content(response, as="text", encoding='UTF-8') -> response_text
 
     jsonlite::fromJSON(response_text) -> response_list
+    response_list
   }
 }
 # retrieve_myInfo() -> myInfo
