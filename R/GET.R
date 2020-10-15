@@ -9,8 +9,11 @@ get_userShowcases <- function(){
   get_showcases <- vimeo_apiFunctional(postingMessage)
   get_showcases()
 }
-get_showcaseVideos <- function(album_id)
+get_showcaseVideos <- function(uri=NULL, album_id=NULL)
 {
+  if(!is.null(uri)){
+    album_id = get_albumIdFromShowcaseUri(uri)
+  }
   postingMessage=glue::glue("GET /me/albums/{album_id}/videos")
   get_showcaseVideosFun <- vimeo_apiFunctional(postingMessage)
   get_showcaseVideosFun()
