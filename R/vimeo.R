@@ -161,3 +161,8 @@ view_googleAnalytics_plan <- function(){
     )
   )
 }
+
+get_albumIdFromShowcaseUri <- function(uri){
+  uri %>%
+    stringr::str_extract("(?<=/)[:digit:]+$")
+}
