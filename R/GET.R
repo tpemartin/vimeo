@@ -11,10 +11,16 @@ get_userShowcases <- function(){
 }
 get_showcaseVideos <- function(uri=NULL, album_id=NULL)
 {
-  if(!is.null(uri)){
+  # require(dplyr)
+  validEndpointUriPattern = "/me/albums/[0-9]+/videos"
+  postingMessage = paste("GET", uri);
+  if(!is.null(uri)
+    && !stringr::str_detect(
+      uri, validEndpointUriPattern)){
     album_id = get_albumIdFromShowcaseUri(uri)
+    postingMessage=glue::glue("GET /me/albums/{album_id}/videos")
   }
-  postingMessage=glue::glue("GET /me/albums/{album_id}/videos")
+
   get_showcaseVideosFun <- vimeo_apiFunctional(postingMessage)
   get_showcaseVideosFun()
 
